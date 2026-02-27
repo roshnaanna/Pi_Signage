@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Signage Admin</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="dashboard-header">
+  <div class="header-content">
+    <div class="branding">
+      <span class="logo">📺</span>
+      <div class="title-block">
+        <h1>Digital Signage Admin</h1>
+        <p>Manage & Control Display Playlists</p>
+      </div>
+    </div>
+    <nav class="breadcrumb">
+      <span>Dashboard</span> › <span>Playlist Order</span>
+    </nav>
+  </div>
+  <div class="header-accent"></div>
+</header>
+
+<div class="container">
+  <div id="playlist"></div>
+  <div class="bottom-actions">
+    <button class="save" id="addMediaBtn">➕ Add Media</button>
+    <button class="save" id="saveBtn">💾 Save Playlist Order</button>
+    <button class="remove-all" id="removeAllBtn">🧹 Remove All Media</button>
+  </div>
+</div>
+
+<!-- Hidden file input -->
+<input type="file" id="fileInput" multiple accept="image/*,video/*" style="display: none;">
+
+<div id="toast" class="toast">Playlist order updated successfully ✅</div>
+
+<div id="confirmModal" class="modal hidden">
+  <div class="modal-content">
+    <p>Are you sure you want to delete this media?</p>
+    <div class="modal-actions">
+      <button id="cancelDelete" class="btn">Cancel</button>
+      <button id="confirmDelete" class="btn btn-danger">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirmAllModal" class="modal hidden">
+  <div class="modal-content">
+    <p>Are you sure you want to remove ALL media from the playlist? This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button id="cancelAll" class="btn">Cancel</button>
+      <button id="confirmAll" class="btn btn-danger">Remove All</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
