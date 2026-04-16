@@ -66,6 +66,21 @@ Pi Signage is a modern, high-performance digital signage solution designed for R
    npm start
    ```
 
+4. **Kiosk Mode (Truly Automatic Fullscreen)**
+   Pi Signage includes an automated launcher that opens the display in true full-screen mode instantly.
+
+   **Standard Launch:**
+   ```bash
+   npm run dev
+   ```
+   *This will start the server and automatically launch the browser in Fullscreen (Kiosk) mode after 5 seconds.*
+
+   **Manual/Pi Autostart:**
+   If you need to launch just the browser (e.g., in a Pi autostart script):
+   ```bash
+   npm run kiosk:pi
+   ```
+
 ---
 
 ## 📖 Operational Guide
