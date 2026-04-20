@@ -97,6 +97,8 @@ async function startServer() {
 
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`✅ Server running at http://localhost:${PORT}`);
+      console.log(`✅ Display at http://localhost:${PORT}/display`);
+      console.log(`✅ Admin at http://localhost:${PORT}/admin`);
     });
 
   } catch (err) {
