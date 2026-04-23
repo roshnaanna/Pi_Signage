@@ -9,6 +9,33 @@ const path = require('path');
 
 console.log('--- 📺 PiSignage Automated Launcher ---');
 
+// 0. Windows Firewall Check
+if (os.platform() === 'win32') {
+  exec('netsh advfirewall firewall show rule name="Allow PiSignage"', (err) => {
+    if (err) {
+      // Rule doesn't exist, try to add it (this might fail if not admin)
+      exec('netsh advfirewall firewall add rule name="Allow PiSignage" dir=in action=allow protocol=TCP localport=5000', (addErr) => {
+        if (addErr) {
+          console.log('💡 TIP: If your phone cannot connect, run this command in PowerShell as Administrator:');
+          console.log('   netsh advfirewall firewall add rule name="Allow PiSignage" dir=in action=allow protocol=TCP localport=5000');
+          console.log('---------------------------------------------------------------------------\n');
+        } else {
+          console.log('✅ Windows Firewall configured to allow connections on port 5000.');
+        }
+      });
+    }
+  });
+} else if (os.platform() === 'linux') {
+  // Check if ufw is installed and active
+  exec('ufw status', (err, stdout) => {
+    if (!err && stdout.includes('active')) {
+      console.log('💡 TIP: Linux Firewall (UFW) is active. To allow phone access, run:');
+      console.log('   sudo ufw allow 5000/tcp');
+      console.log('---------------------------------------------------------------------------\n');
+    }
+  });
+}
+
 // 1. Start the actual server using nodemon
 // Using 'npx' ensures we use the project's local nodemon if available
 const serverProcess = spawn('npx', ['nodemon', 'server.js'], {
