@@ -259,3 +259,19 @@ async function checkDisplayVersion() {
 
 // Poll for admin updates every 3 seconds
 setInterval(checkDisplayVersion, 3000);
+
+// ================= IP INDICATOR =================
+async function updateIpIndicator() {
+  try {
+    const res = await fetch("/api/system/ip");
+    if (!res.ok) return;
+    const { ip, port } = await res.json();
+    const el = document.getElementById("ip-indicator");
+    if (el) {
+      el.innerText = `Admin: http://${ip}:${port}/admin`;
+    }
+  } catch (e) {
+    console.error("IP detection failed", e);
+  }
+}
+updateIpIndicator();
