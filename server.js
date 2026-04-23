@@ -42,15 +42,29 @@ app.use("/api/auth", authRoutes);
 app.get("/api/system/ip", (req, res) => {
   const interfaces = os.networkInterfaces();
   let ipAddress = 'localhost';
+  let prioritizedIp = null;
+
   for (const name of Object.keys(interfaces)) {
+    // Skip virtual interfaces (WSL, VirtualBox, etc)
+    if (name.toLowerCase().includes('vethernet') || 
+        name.toLowerCase().includes('virtualbox') || 
+        name.toLowerCase().includes('vmware')) {
+      continue;
+    }
+
     for (const iface of interfaces[name]) {
       if (iface.family === 'IPv4' && !iface.internal) {
-        ipAddress = iface.address;
-        return res.json({ ip: ipAddress, port: PORT });
+        // Prioritize Wi-Fi and Ethernet
+        if (name.toLowerCase().includes('wi-fi') || name.toLowerCase().includes('ethernet')) {
+          prioritizedIp = iface.address;
+        }
+        ipAddress = iface.address; // fallback to any valid IPv4
       }
     }
+    if (prioritizedIp) break;
   }
-  res.json({ ip: ipAddress, port: PORT });
+  
+  res.json({ ip: prioritizedIp || ipAddress, port: PORT });
 });
 
 // Public API for signage display
@@ -96,9 +110,24 @@ async function startServer() {
     console.log("✅ MongoDB connected");
 
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`✅ Server running at http://localhost:${PORT}`);
-      console.log(`✅ Display at http://localhost:${PORT}/display`);
-      console.log(`✅ Admin at http://localhost:${PORT}/admin`);
+      const interfaces = os.networkInterfaces();
+      let networkIp = 'localhost';
+      for (const name of Object.keys(interfaces)) {
+        if (name.toLowerCase().includes('wi-fi') || name.toLowerCase().includes('ethernet')) {
+          for (const iface of interfaces[name]) {
+            if (iface.family === 'IPv4' && !iface.internal) {
+              networkIp = iface.address;
+              break;
+            }
+          }
+        }
+      }
+      
+      console.log(`✅ Server running at:`);
+      console.log(`   - Local:   http://localhost:${PORT}`);
+      console.log(`   - Network: http://${networkIp}:${PORT}`);
+      console.log(`\n✅ Display: http://${networkIp}:${PORT}/display`);
+      console.log(`✅ Admin:   http://${networkIp}:${PORT}/admin`);
     });
 
   } catch (err) {
